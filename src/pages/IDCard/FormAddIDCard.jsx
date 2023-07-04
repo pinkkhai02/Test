@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Title from "../../components/common/Title";
 import { useTheme } from "@emotion/react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const FormAddIDCard = () => {
   const theme = useTheme();
@@ -13,82 +16,34 @@ const FormAddIDCard = () => {
   const { id } = useParams();
   const handleChange = (e) => {
     setIdCard(e.target.value);
-    console.log(idCard);
+    // console.log(idCard);
   };
 
-  // const userForm = useFormik({
-  //   initialValues: {
-  //     name: currentUser ? currentUser.name : "",
-  //     gmail: currentUser ? currentUser.gmail : "",
-  //     phone: currentUser ? currentUser.phone : "",
-  //     password: "",
-  //     role: currentUser ? currentUser.role : "",
-  //   },
-  //   validationSchema: Yup.object({
-  //     name: Yup.string()
-  //       .min(4, "Họ và tên tối thiểu 4 ký tự ")
-  //       .required("Bạn phải nhập tên"),
-  //     gmail: Yup.string()
-  //       .matches(
-  //         /([a-zA-Z0-9]+)([\_\.\-{1}])?([a-zA-Z0-9]+)\@([a-zA-Z0-9]+)([\.])([a-zA-Z\.]+)/g,
-  //         "Gmail không hợp lệ"
-  //       )
-  //       .required("Bạn phải nhập Gmail"),
-  //     phone: Yup.string()
-  //       .min(10, "Số điện thoại không hợp lệ")
-  //       .matches(
-  //         /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
-  //         "Số điện thoại không hợp lệ"
-  //       )
-  //       .required("Bạn phải nhập số điện thoại"),
-  //     password: Yup.string()
-  //       .min(8, "Mật khẩu tối thiểu 8 ký tự ")
-  //       .required("Bạn phải nhập mật khẩu"),
-  //     role: Yup.string().required("Chọn kiểu thành viên"),
-  //   }),
-  //   enableReinitialize: true,
-  //   onSubmit: async (values) => {
-  //     try {
-  //       const formData = {
-  //         name: values.name,
-  //         gmail: values.gmail,
-  //         phone: values.phone,
-  //         password: values.password,
-  //         role: values.role,
-  //       };
-  //       const respone = await accountApi.register(formData);
-  //       if (respone.status === 201) {
-  //         navigate("/account");
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   },
-  // });
+  const handleBack = () => {
+    navigate(-1);
+  };
 
-  // console.log(userForm.errors);
-
-  // useEffect(() => {
-  //   if (id) {
-  //     const fetchData = async () => {
-  //       try {
-  //         const response = await accountApi.getById(id);
-  //         if (response.status === 200) {
-  //           dispatch(setCurrentUser(response.data));
-  //         }
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     };
-  //     fetchData();
-  //   }
-  // }, [id]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:8000/codes", {
+        code: idCard,
+      });
+      if (response.status === 200) {
+        toast.success("Thêm thành công!");
+        setIdCard("");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // console.log(userForm.errors);
 
   return (
     <Title title="Mã thẻ">
-      <Box>
+      <ToastContainer />
+      <Box component="form" onSubmit={handleSubmit}>
         <Stack spacing={3} alignItems="center" height="60vh">
           <TextField
             type="text"
@@ -115,9 +70,10 @@ const FormAddIDCard = () => {
               Thêm
             </Button>
             <Button
-              type="submit"
+              type="button"
               size="large"
               variant="contained"
+              onClick={handleBack}
               sx={{
                 width: "120px",
                 backgroundColor: "#767C75",
@@ -127,7 +83,7 @@ const FormAddIDCard = () => {
                 },
               }}
             >
-              Huỷ
+              Quay Lại
             </Button>
           </Box>
         </Stack>

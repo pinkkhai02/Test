@@ -36,7 +36,7 @@ export default function Router() {
           }
         />
         <Route
-          path="/activity-schedule"
+          path="/activity-schedule/detail/:code"
           element={
             <DefaultLayout>
               <ActivitySchedule />
@@ -44,10 +44,10 @@ export default function Router() {
           }
         />
         <Route
-          path="/activity-schedule/detail/:code"
+          path="/activity-schedule"
           element={
             <DefaultLayout>
-              <ActivitySchedule />
+              <ActivityScheduleDetail />
             </DefaultLayout>
           }
         />
